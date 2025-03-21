@@ -1,0 +1,37 @@
+//to create the network
+docker network create mynetwork
+
+//to create postgres-container
+docker run --name postgres-container --network mynetwork -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=tiger -e POSTGRES_DB=EmployeeDB -p 5432:5432 -d postgres
+
+//to build the src code
+docker build . -t adityalondhe21/empcode
+
+
+//to run the empcode-container in mynetwork (interactive -> "-it" )
+docker run -it --name empcode-container --network mynetwork adityalondhe21/empcode
+
+
+//No employee table was present on postgres server so by going into psql shell we have to create it---->
+
+C:\Users\Wissen\Docker\Assignment22>docker exec -it postgres-container psql -U postgres -d EmployeeDB
+psql (17.3 (Debian 17.3-1.pgdg120+1))
+Type "help" for help.
+
+EmployeeDB=# SELECT * FROM Employee;
+ERROR:  relation "employee" does not exist
+LINE 1: SELECT * FROM employee;          //this error was coming 
+                      ^
+employeedb=# CREATE TABLE Employee (
+    EID INT PRIMARY KEY,
+    NAME VARCHAR(255),
+    AGE INT,
+    SALARY INT ,
+    DESIGNATION VARCHAR(100)
+);
+
+
+
+
+
+
